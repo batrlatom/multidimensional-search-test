@@ -3,15 +3,19 @@ var similarity = require('compute-cosine-similarity');
 
 
 var list = [];
-var dimension = 100;
-for (var i = 0, t = 100000; i < t; i++) {
+var dimension = 256;
+var volume = 100000;
+
+
+for (var i = 0, t = volume; i < t; i++) {
 	var arr = [];
 	for (var ii = 0, tt = dimension; ii < tt; ii++) {
-		arr.push(Math.round(Math.random()))
-		list.push(arr);
-
+		arr.push(Math.random() - 1)
 	}
+	list.push(arr);
 }
+
+//console.log(list[0])
 
 
 
@@ -54,7 +58,14 @@ function buildVPTree(data) {
 
 
 var vptree = buildVPTree(list);
+//console.log(vptree.stringify());
 
+var fs = require('fs');
+fs.writeFile("test.txt", vptree.stringify(), function (err) {
+	if (err) {
+		console.log(err);
+	}
+});
 
 
 
@@ -65,11 +76,14 @@ for (var j = 0; j < 10; j++) {
 	for (var i = 0; i < 1000; i++) {
 		//var nearest = vptree.search([-1, -1, 1, 1, 1]); // [{"i":1,"d":3}]
 		var arr = []
-		for (var ii = 0, tt = dimension; ii < tt; ii++) {
-			arr.push(Math.round(Math.random()))
-		}
 
-		var nearest = vptree.search(arr);
+		arr = list[dimension - 1]
+			/*for (var ii = 0, tt = dimension; ii < tt; ii++) {
+				arr.push(Math.round(Math.random()))
+			}*/
+
+		var nearest = vptree.search(arr, 2, 0.01);
+		//console.log(nearest);
 		/*
 		console.log(nearest)
 		console.log("index: " + Math.max(nearest))
